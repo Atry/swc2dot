@@ -18,13 +18,22 @@ val scripts = swc\"libraries"\"library"\"script"
 var grouped = scripts.groupBy {
 	n:xml.Node=>packageOf((n\"def"\"@id").toString())
 }
-println("digraph swc {")
+println("digraph dependence {")
+def isExclude(packageName:String):Boolean =
+	packageName.startsWith("flash.") ||
+	packageName.startsWith("mx.") ||
+	packageName.startsWith("__AS3__.") ||
+	packageName == "__GLOBAL__"
+
 for ((packageName, scripts) <- grouped) {
-	for (deppackageName:String <- (for (depid <- scripts\"dep") yield packageOf((depid\"@id").toString())).toSet) {
-		if (!(deppackageName.startsWith("flash.") || deppackageName.startsWith("mx.") || deppackageName == "__GLOBAL__" || deppackageName == packageName))
-		{
-			println("\t\"" + packageName + "\" -> \"" + deppackageName + "\";")
+	if (!isExclude(packageName)) {
+		for (deppackageName:String <- (for (depid <- scripts\"dep") yield packageOf((depid\"@id").toString())).toSet) {
+			if (!(isExclude(deppackageName) || deppackageName == packageName))
+			{
+				println("\t\"" + packageName + "\" -> \"" + deppackageName + "\";")
+			}
 		}
 	}
 }
 println("}")
+
