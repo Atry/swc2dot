@@ -22,6 +22,7 @@ println("digraph dependence {")
 def isExclude(packageName:String):Boolean =
 	packageName.startsWith("flash.") ||
 	packageName.startsWith("mx.") ||
+	packageName.startsWith("spark.") ||
 	packageName.startsWith("__AS3__.") ||
 	packageName == "__GLOBAL__"
 
