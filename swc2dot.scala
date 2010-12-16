@@ -22,13 +22,12 @@ println("digraph dependence {")
 def isExclude(packageName:String):Boolean =
 	packageName.startsWith("flash.") ||
 	packageName.startsWith("mx.") ||
-	packageName.startsWith("spark.") ||
 	packageName.startsWith("__AS3__.") ||
 	packageName == "__GLOBAL__"
 
 for ((packageName, scripts) <- grouped) {
 	if (!isExclude(packageName)) {
-		for (deppackageName:String <- (for (depid <- scripts\"dep") yield packageOf((depid\"@id").toString())).toSet) {
+		for (deppackageName:String <- scala.collection.immutable.SortedSet((for (depid <- scripts\"dep") yield packageOf((depid\"@id").toString())):_*)) {
 			if (!(isExclude(deppackageName) || deppackageName == packageName))
 			{
 				println("\t\"" + packageName + "\" -> \"" + deppackageName + "\";")
@@ -38,3 +37,4 @@ for ((packageName, scripts) <- grouped) {
 }
 println("}")
 
+System.exit(0)
